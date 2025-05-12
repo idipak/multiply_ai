@@ -19,6 +19,7 @@ class ProductCard extends ConsumerWidget {
     
     return Card(
       elevation: 3,
+      margin: const EdgeInsets.symmetric(horizontal: 12),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
       ),
