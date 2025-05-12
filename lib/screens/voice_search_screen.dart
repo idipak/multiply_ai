@@ -90,6 +90,12 @@ class _VoiceSearchScreenState extends State<VoiceSearchScreen> with TickerProvid
     if (transcription != null) {
       setState(() {
         _transcribedText = transcription;
+        Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ProductListScreen(searchQuery: _transcribedText),
+                ),
+              );
       });
       
       // Send transcribed text to second API
@@ -142,7 +148,7 @@ class _VoiceSearchScreenState extends State<VoiceSearchScreen> with TickerProvid
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const ProductListScreen(),
+                  builder: (context) => ProductListScreen(searchQuery: "Plywood"),
                 ),
               );
             },

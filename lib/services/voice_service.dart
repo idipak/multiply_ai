@@ -19,7 +19,7 @@ class VoiceService {
   static const Duration _silenceTimeout = Duration(seconds: 3);
 
   // Replace with your actual API keys and endpoints
-  final String _chatGptApiKey = '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';
+  final String _chatGptApiKey = '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';
   final String _chatGptEndpoint = 'https://api.openai.com/v1/audio/transcriptions';
   final String _secondApiEndpoint = 'https://your-second-api-endpoint.com';
 

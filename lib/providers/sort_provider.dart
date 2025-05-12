@@ -13,8 +13,8 @@ final sortOptionProvider = StateProvider<SortOption>((ref) {
   return SortOption.none;
 });
 
-final sortedProductsProvider = Provider<List<Product>>((ref) {
-  final products = ref.watch(filteredProductsProvider);
+final sortedProductsProvider = Provider.family<List<Product>, String>((ref, searchQuery) {
+  final products = ref.watch(filteredProductsProvider(searchQuery));
   final sortOption = ref.watch(sortOptionProvider);
   
   final sortedProducts = [...products];

@@ -154,7 +154,7 @@ class ProductCard extends ConsumerWidget {
                       ),
                     );
                   },
-                  icon: const Icon(Icons.shopping_cart, size: 16),
+                  icon: const Icon(Icons.shopping_cart, size: 16, color: Colors.white,),
                   label: const Text('Add'),
                 ),
               ],
