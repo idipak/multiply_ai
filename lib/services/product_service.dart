@@ -1,9 +1,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:multiply_ai/services/api_service.dart';
 import '../models/product.dart';
 
 class ProductService {
+  final ApiService _apiService = ApiService();
   // Simulated API response
-  Future<List<Product>> getProducts() async {
+  Future<List<Product>> getProducts(String searchQuery) async {
     // Simulate network delay
     await Future.delayed(const Duration(milliseconds: 800));
     
@@ -75,7 +77,7 @@ final productServiceProvider = Provider<ProductService>((ref) {
 });
 
 // FutureProvider for products
-final productsProvider = FutureProvider<List<Product>>((ref) {
+final productsProvider = FutureProvider.family<List<Product>, String>((ref, searchQuery) {
   final productService = ref.watch(productServiceProvider);
-  return productService.getProducts();
-}); 
+  return productService.getProducts(searchQuery);
+});

@@ -10,12 +10,13 @@ import '../providers/cart_provider.dart';
 import 'cart_screen.dart';
 
 class ProductListScreen extends ConsumerWidget {
-  const ProductListScreen({super.key});
+  final String searchQuery;
+  const ProductListScreen({super.key, required this.searchQuery});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final asyncProducts = ref.watch(productsProvider);
-    final sortedProducts = ref.watch(sortedProductsProvider);
+    final asyncProducts = ref.watch(productsProvider(searchQuery));
+    final sortedProducts = ref.watch(sortedProductsProvider(searchQuery));
     final cartItemCount = ref.watch(cartItemCountProvider);
     final currentSortOption = ref.watch(sortOptionProvider);
     
@@ -41,17 +42,46 @@ class ProductListScreen extends ConsumerWidget {
               );
             },
           ),
-          IconButton(
-            icon: const Icon(Icons.filter_list),
-            onPressed: () {
-              Scaffold.of(context).openEndDrawer();
-            },
-          ),
         ],
       ),
-      endDrawer: const FilterDrawer(),
+      // endDrawer: const FilterDrawer(),
       body: Column(
         children: [
+          Container(
+            margin: const EdgeInsets.all(16),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            decoration: BoxDecoration(
+              color: Colors.blue.shade50,
+              borderRadius: BorderRadius.circular(8),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.2),
+                  spreadRadius: 1,
+                  blurRadius: 3,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Row(
+              children: [
+                Text(
+                  "Search Results for: ", 
+                  style: GoogleFonts.poppins(
+                    fontSize: 18,
+                    color: Colors.blue.shade700,
+                  ),
+                ),
+                Text(
+                  searchQuery, 
+                  style: GoogleFonts.poppins(
+                    fontSize: 18, 
+                    fontWeight: FontWeight.w500,
+                    color: Colors.blue.shade900,
+                  ),
+                ),
+              ],
+            ),
+          ),
           _buildSortingOptions(context, ref, currentSortOption),
           Expanded(
             child: asyncProducts.when(

@@ -107,8 +107,8 @@ class FilterNotifier extends StateNotifier<FilterState> {
   }
 }
 
-final filteredProductsProvider = Provider<List<Product>>((ref) {
-  final allProducts = ref.watch(productsProvider).value ?? [];
+final filteredProductsProvider = Provider.family<List<Product>, String>((ref, searchQuery) {
+  final allProducts = ref.watch(productsProvider(searchQuery)).value ?? [];
   final filters = ref.watch(filterProvider);
 
   return allProducts.where((product) {
