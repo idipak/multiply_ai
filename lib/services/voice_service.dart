@@ -19,7 +19,7 @@ class VoiceService {
   static const Duration _silenceTimeout = Duration(seconds: 3);
 
   // Replace with your actual API keys and endpoints
-  final String _chatGptApiKey = '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';
+  final String _chatGptApiKey = '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';
   final String _chatGptEndpoint = 'https://api.openai.com/v1/audio/transcriptions';
   final String _secondApiEndpoint = 'https://your-second-api-endpoint.com';
 
@@ -190,4 +190,4 @@ class VoiceService {
   bool get isRecording => _isRecording;
 } 
 
-const String _prompt = 'Category: Plywood, Plywood, Laminate, Plywood, Hardware, Furniture, Laminate, Adhesive, Sub-Category: Waterproof, Interior, Decorative, Premium, Handles, Dining, Edge Finish, Construction, Material: Hardwood, Softwood, MDF, Teak, Aluminum, MDF+Metal, PVC, PVA, Brand: GreenPly, Century, Merino, Kitply, Hafele, Durian, Sunmica, Fevicol, Usage: Bathrooms, Boats, Furniture, Cabinets, Luxury Furniture, Kitchen Cabinets, Dining Room, Wood Bonding';
+const String _prompt = 'Plywood, Plywood, Laminate, Plywood, Hardware, Furniture, Laminate, Adhesive, Waterproof, Interior, Decorative, Premium, Handles, Dining, Edge Finish, Construction, Hardwood, Softwood, MDF, Teak, Aluminum, MDF+Metal, PVC, PVA, Brand: GreenPly, Century, Merino, Kitply, Hafele, Durian, Sunmica, Fevicol, Usage: Bathrooms, Boats, Furniture, Cabinets, Luxury Furniture, Kitchen Cabinets, Dining Room, Wood Bonding';
