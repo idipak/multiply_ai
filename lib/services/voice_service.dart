@@ -190,4 +190,4 @@ class VoiceService {
   bool get isRecording => _isRecording;
 } 
 
-const String _prompt = 'Plywood, Plywood, Laminate, Plywood, Hardware, Furniture, Laminate, Adhesive, Waterproof, Interior, Decorative, Premium, Handles, Dining, Edge Finish, Construction, Hardwood, Softwood, MDF, Teak, Aluminum, MDF+Metal, PVC, PVA, Brand: GreenPly, Century, Merino, Kitply, Hafele, Durian, Sunmica, Fevicol, Usage: Bathrooms, Boats, Furniture, Cabinets, Luxury Furniture, Kitchen Cabinets, Dining Room, Wood Bonding';
+const String _prompt = 'Plywood, Plywood, Laminate, Plywood, Hardware, Furniture, Laminate, Adhesive, Waterproof, Interior, Decorative, Premium, Handles, Dining, Edge Finish, Construction, Hardwood, Softwood, MDF, Teak, Aluminum, MDF+Metal, PVC, PVA, GreenPly, Century, Merino, Kitply, Hafele, Durian, Sunmica, Fevicol, Bathrooms, Boats, Furniture, Cabinets, Luxury Furniture, Kitchen Cabinets, Dining Room, Wood Bonding';
