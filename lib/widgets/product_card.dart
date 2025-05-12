@@ -64,7 +64,7 @@ class ProductCard extends ConsumerWidget {
               spacing: 8,
               runSpacing: 8,
               children: [
-                _buildChip(product.properties, Colors.blue.shade100),
+                // _buildChip(product.properties.toString(), Colors.blue.shade100),
                 _buildChip(product.woodType, Colors.green.shade100),
                 _buildChip(product.thickness, Colors.orange.shade100),
               ],

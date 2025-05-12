@@ -1,8 +1,37 @@
+class ProductProperties {
+  final String subCategory;
+  final String material;
+  final String waterproof;
+  final String termiteProof;
+  final String fireRated;
+  final String usage;
+
+  ProductProperties({
+    required this.subCategory,
+    required this.material,
+    required this.waterproof,
+    required this.termiteProof,
+    required this.fireRated,
+    required this.usage,
+  });
+
+  factory ProductProperties.fromJson(Map<String, dynamic> json) {
+    return ProductProperties(
+      subCategory: json['sub-category'] as String,
+      material: json['material'] as String,
+      waterproof: json['waterproof'] as String,
+      termiteProof: json['termite_proof'] as String,
+      fireRated: json['fire_rated'] as String,
+      usage: json['usage'] as String,
+    );
+  }
+}
+
 class Product {
-  final String id;
+  final int id;
   final String name;
   final String type;
-  final String properties;
+  final ProductProperties properties;
   final String woodType;
   final String thickness;
   final String dimensions;
@@ -16,6 +45,7 @@ class Product {
   final double rating;
   final String discount;
   final int stock;
+  final bool isSponsored;
 
   Product({
     required this.id,
@@ -35,14 +65,15 @@ class Product {
     required this.rating,
     required this.discount,
     required this.stock,
+    required this.isSponsored,
   });
 
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(
-      id: json['id'] as String? ?? json['name'].hashCode.toString(),
+      id: json['ID'] as int,
       name: json['name'] as String,
       type: json['type'] as String,
-      properties: json['properties'] as String,
+      properties: ProductProperties.fromJson(json['properties'] as Map<String, dynamic>),
       woodType: json['wood_type'] as String,
       thickness: json['thickness'] as String,
       dimensions: json['dimensions'] as String,
@@ -56,6 +87,7 @@ class Product {
       rating: (json['rating'] as num).toDouble(),
       discount: json['discount'] as String,
       stock: json['stock'] as int,
+      isSponsored: json['isSponsored'] as bool,
     );
   }
 
