@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 //http://192.168.0.200:8080/api/user/behavior
 
 class ApiService {
-  final String baseUrl = 'http://192.168.0.200:8080/';
+  final String baseUrl = 'http://192.168.0.190:8080/';
   final Map<String, String> _defaultHeaders = {
     'Content-Type': 'application/json',
     'Accept': 'application/json',

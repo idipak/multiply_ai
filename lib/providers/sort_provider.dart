@@ -27,7 +27,7 @@ final sortedProductsProvider = Provider.family<List<Product>, String>((ref, sear
       sortedProducts.sort((a, b) => b.discountedPrice.compareTo(a.discountedPrice));
       break;
     case SortOption.rating:
-      sortedProducts.sort((a, b) => b.rating.compareTo(a.rating));
+      sortedProducts.sort((a, b) => b.rating!.compareTo(a.rating!));
       break;
     case SortOption.none:
     default:

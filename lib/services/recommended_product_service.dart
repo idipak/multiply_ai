@@ -9,8 +9,7 @@ class RecommendedProductService {
     try {
       // Using the exact API URL as specified in the requirements
       final response = await _apiService.get(
-        'http://192.168.0.200:8080/api/user/behavior',
-        useAbsoluteUrl: true
+        'api/user/behavior',
       );
       final responseData = response as Map<String, dynamic>;
       final recommendedProductsData = responseData['recommended_products'] as List<dynamic>;
