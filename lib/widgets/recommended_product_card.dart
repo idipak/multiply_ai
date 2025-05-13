@@ -123,6 +123,7 @@ class RecommendedProductCard extends ConsumerWidget {
               // Reason
               if (reason.isNotEmpty)
                 Container(
+                  height: 50,
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
                     color: Colors.amber.shade50,
@@ -141,7 +142,7 @@ class RecommendedProductCard extends ConsumerWidget {
                             fontSize: 11,
                             color: Colors.amber.shade900,
                           ),
-                          maxLines: 3,
+                          maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
