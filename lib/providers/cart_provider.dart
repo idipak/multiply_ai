@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/cart_item.dart';
 import '../models/product.dart';
+import '../models/recommended_product.dart';
 
 // Use a simple StateNotifierProvider instead of code generation for now
 final cartProvider = StateNotifierProvider<CartNotifier, List<CartItem>>((ref) {
@@ -27,6 +28,31 @@ class CartNotifier extends StateNotifier<List<CartItem>> {
     }
 
     state = cartItems;
+  }
+  
+  void addRecommendedProductToCart(RecommendedProduct recommendedProduct) {
+    // Convert RecommendedProduct to Product
+    final product = Product(
+      id: recommendedProduct.productId.toString(),
+      name: recommendedProduct.productName,
+      type: recommendedProduct.category,
+      properties: "",
+      woodType: "",
+      thickness: "",
+      dimensions: "",
+      color: "",
+      price: recommendedProduct.price,
+      brand: recommendedProduct.brand,
+      ecoFriendly: "",
+      fireResistant: "",
+      termiteResistant: "",
+      recommendedFor: "",
+      rating: recommendedProduct.rating,
+      discount: recommendedProduct.discount,
+      stock: recommendedProduct.stock,
+    );
+    
+    addToCart(product);
   }
 
   void removeFromCart(String productName) {

@@ -7,6 +7,7 @@ import '../services/product_service.dart';
 import '../widgets/product_card.dart';
 import '../widgets/filter_drawer.dart';
 import '../providers/cart_provider.dart';
+import '../widgets/recommended_products_section.dart';
 import 'cart_screen.dart';
 
 class ProductListScreen extends ConsumerWidget {
@@ -44,51 +45,68 @@ class ProductListScreen extends ConsumerWidget {
           ),
         ],
       ),
-      // endDrawer: const FilterDrawer(),
-      body: Column(
-        children: [
-          Container(
-            margin: const EdgeInsets.all(16),
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            decoration: BoxDecoration(
-              color: Colors.blue.shade50,
-              borderRadius: BorderRadius.circular(8),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.2),
-                  spreadRadius: 1,
-                  blurRadius: 3,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            child: Row(
-              children: [
-                Text(
-                  "Search Results for: ", 
-                  style: GoogleFonts.poppins(
-                    fontSize: 18,
-                    color: Colors.blue.shade700,
+      body: CustomScrollView(
+        slivers: [
+          SliverToBoxAdapter(
+            child: Container(
+              margin: const EdgeInsets.all(16),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: BoxDecoration(
+                color: Colors.blue.shade50,
+                borderRadius: BorderRadius.circular(8),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.2),
+                    spreadRadius: 1,
+                    blurRadius: 3,
+                    offset: const Offset(0, 2),
                   ),
-                ),
-                Text(
-                  searchQuery, 
-                  style: GoogleFonts.poppins(
-                    fontSize: 18, 
-                    fontWeight: FontWeight.w500,
-                    color: Colors.blue.shade900,
+                ],
+              ),
+              child: Row(
+                children: [
+                  Text(
+                    "Search Results for: ", 
+                    style: GoogleFonts.poppins(
+                      fontSize: 18,
+                      color: Colors.blue.shade700,
+                    ),
                   ),
-                ),
-              ],
+                  Text(
+                    searchQuery, 
+                    style: GoogleFonts.poppins(
+                      fontSize: 18, 
+                      fontWeight: FontWeight.w500,
+                      color: Colors.blue.shade900,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-          _buildSortingOptions(context, ref, currentSortOption),
-          Expanded(
-            child: asyncProducts.when(
-              data: (_) => _buildProductGrid(context, sortedProducts, ref),
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (err, stack) => Center(child: Text('Error: $err')),
+          const SliverToBoxAdapter(
+            child: RecommendedProductsSection(),
+          ),
+          SliverPersistentHeader(
+            pinned: true,
+            delegate: _SortingHeaderDelegate(
+              child: _buildSortingOptions(context, ref, currentSortOption),
             ),
+          ),
+          const SliverToBoxAdapter(
+            child: SizedBox(height: 16),
+          ),
+          asyncProducts.when(
+            data: (_) => _buildProductGrid(context, sortedProducts, ref),
+            loading: () => const SliverFillRemaining(
+              child: Center(child: CircularProgressIndicator()),
+            ),
+            error: (err, stack) => SliverFillRemaining(
+              child: Center(child: Text('Error: $err')),
+            ),
+          ),
+          const SliverToBoxAdapter(
+            child: SizedBox(height: 100),
           ),
         ],
       ),
@@ -179,51 +197,79 @@ class ProductListScreen extends ConsumerWidget {
     );
   }
   
-  Widget _buildProductGrid(BuildContext context, List<dynamic> products, WidgetRef ref) {
+  SliverGrid _buildProductGrid(BuildContext context, List<dynamic> products, WidgetRef ref) {
     if (products.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.search_off,
-              size: 64,
-              color: Colors.grey[400],
+      return SliverGrid.count(
+        crossAxisCount: 1,
+        children: [
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.search_off,
+                  size: 64,
+                  color: Colors.grey[400],
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'No products match your filters',
+                  style: GoogleFonts.poppins(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.grey[700],
+                  ),
+                ),
+                const SizedBox(height: 8),
+                ElevatedButton.icon(
+                  onPressed: () {
+                    ref.read(filterProvider.notifier).resetFilters();
+                  },
+                  icon: const Icon(Icons.refresh),
+                  label: const Text('Reset Filters'),
+                ),
+              ],
             ),
-            const SizedBox(height: 16),
-            Text(
-              'No products match your filters',
-              style: GoogleFonts.poppins(
-                fontSize: 18,
-                fontWeight: FontWeight.w500,
-                color: Colors.grey[700],
-              ),
-            ),
-            const SizedBox(height: 8),
-            ElevatedButton.icon(
-              onPressed: () {
-                ref.read(filterProvider.notifier).resetFilters();
-              },
-              icon: const Icon(Icons.refresh),
-              label: const Text('Reset Filters'),
-            ),
-          ],
-        ),
+          ),
+        ],
       );
     }
     
-    return GridView.builder(
-      padding: const EdgeInsets.all(16),
+    return SliverGrid(
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 1,
         childAspectRatio: 1.8,
         mainAxisSpacing: 16,
         crossAxisSpacing: 16,
       ),
-      itemCount: products.length,
-      itemBuilder: (context, index) {
-        return ProductCard(product: products[index]);
-      },
+      delegate: SliverChildBuilderDelegate(
+        (context, index) {
+          return ProductCard(product: products[index]);
+        },
+        childCount: products.length,
+      ),
     );
+  }
+}
+
+class _SortingHeaderDelegate extends SliverPersistentHeaderDelegate {
+  final Widget child;
+  
+  _SortingHeaderDelegate({required this.child});
+  
+  @override
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return child;
+  }
+  
+  @override
+  double get maxExtent => 60;
+  
+  @override
+  double get minExtent => 60;
+  
+  @override
+  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
+    return true;
   }
 } 

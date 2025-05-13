@@ -9,6 +9,7 @@ class ApiService {
   final Map<String, String> _defaultHeaders = {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
+    'user-id': '1',
   };
   
   // Add auth token to headers when user is logged in
@@ -22,11 +23,11 @@ class ApiService {
   }
 
   // GET request
-  Future<dynamic> get(String endpoint, {Map<String, String>? queryParams}) async {
+  Future<dynamic> get(String endpoint, {Map<String, String>? queryParams, bool useAbsoluteUrl = false}) async {
     try {
-      final uri = Uri.parse('$baseUrl$endpoint').replace(
-        queryParameters: queryParams,
-      );
+      final uri = useAbsoluteUrl 
+          ? Uri.parse(endpoint)
+          : Uri.parse('$baseUrl$endpoint').replace(queryParameters: queryParams);
       
       final response = await http.get(uri, headers: _defaultHeaders);
       return _processResponse(response);
