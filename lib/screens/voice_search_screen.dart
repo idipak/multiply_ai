@@ -20,6 +20,7 @@ class _VoiceSearchScreenState extends State<VoiceSearchScreen> with TickerProvid
   
   late AnimationController _animationController;
   late AnimationController _pulseAnimationController;
+  late AnimationController _textAnimationController;
   
   double _amplitudeLevel = 0.0;
   bool _isSilenceDetected = false;
@@ -40,6 +41,11 @@ class _VoiceSearchScreenState extends State<VoiceSearchScreen> with TickerProvid
       vsync: this,
       duration: const Duration(milliseconds: 500),
     )..repeat(reverse: true);
+    
+    _textAnimationController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 6), // Total duration for all 3 languages
+    )..repeat();
     
     // Add a timer to check recording status for auto-stop detection
     _recordingStatusTimer = Timer.periodic(const Duration(milliseconds: 500), (timer) {
@@ -70,6 +76,7 @@ class _VoiceSearchScreenState extends State<VoiceSearchScreen> with TickerProvid
   void dispose() {
     _animationController.dispose();
     _pulseAnimationController.dispose();
+    _textAnimationController.dispose();
     _recordingStatusTimer?.cancel();
     _amplitudeUpdateTimer?.cancel();
     _voiceService.dispose();
@@ -138,29 +145,30 @@ class _VoiceSearchScreenState extends State<VoiceSearchScreen> with TickerProvid
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text('Voice Assistant'),
-        elevation: 0,
-        actions: [
-          ElevatedButton.icon(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ProductListScreen(searchQuery: "Plywood"),
-                ),
-              );
-            },
-            icon: const Icon(Icons.shopping_cart),
-            label: const Text('Shop'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-            ),
-          ),
-        ],
-      ),
+      appBar: AppBar(),
+      // appBar: AppBar(
+      //   backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+      //   title: const Text('Voice Assistant'),
+      //   elevation: 0,
+      //   actions: [
+      //     ElevatedButton.icon(
+      //       onPressed: () {
+      //         Navigator.push(
+      //           context,
+      //           MaterialPageRoute(
+      //             builder: (context) => ProductListScreen(searchQuery: "Plywood"),
+      //           ),
+      //         );
+      //       },
+      //       icon: const Icon(Icons.shopping_cart),
+      //       label: const Text('Shop'),
+      //       style: ElevatedButton.styleFrom(
+      //         backgroundColor: Colors.transparent,
+      //         elevation: 0,
+      //       ),
+      //     ),
+      //   ],
+      // ),
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -178,13 +186,13 @@ class _VoiceSearchScreenState extends State<VoiceSearchScreen> with TickerProvid
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Row(),
-              const Text(
-                'Tap the button and speak',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+              
+              // Animated text that cycles through languages
+              AnimatedPromptText(
+                animation: _textAnimationController,
               ),
               
-              const SizedBox(height: 40),
+              const SizedBox(height: 30),
               
               if (_voiceService.isRecording) ...[
                 _buildWaveAnimation(),
@@ -211,6 +219,12 @@ class _VoiceSearchScreenState extends State<VoiceSearchScreen> with TickerProvid
                 _buildRecordButton(),
               
               const SizedBox(height: 30),
+
+              const Text(
+                'Tap the button and speak',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+              ),
               
               Expanded(
                 child: SingleChildScrollView(
@@ -413,6 +427,75 @@ class _VoiceSearchScreenState extends State<VoiceSearchScreen> with TickerProvid
             ),
           ),
       ],
+    );
+  }
+}
+
+/// Widget that animates through "what you are looking for" in English, Hindi, and Kannada
+class AnimatedPromptText extends StatelessWidget {
+  final Animation<double> animation;
+  
+  // Text in different languages
+  final List<Map<String, String>> _promptTexts = [
+    {'language': 'English', 'text': 'what you are looking for'},
+    {'language': 'हिंदी (Hindi)', 'text': 'आप क्या ढूंढ रहे हैं'},
+    {'language': 'ಕನ್ನಡ (Kannada)', 'text': 'ನೀವು ಹುಡುಕುತ್ತಿರುವುದು'},
+  ];
+
+  AnimatedPromptText({
+    super.key,
+    required this.animation,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 80,
+      child: AnimatedBuilder(
+        animation: animation,
+        builder: (context, child) {
+          // Calculate which language to show based on animation value
+          final position = (animation.value * 3).floor() % 3;
+          final currentLanguage = _promptTexts[position]['language']!;
+          final currentText = _promptTexts[position]['text']!;
+          
+          // Calculate fade in/out
+          final cyclePosition = (animation.value * 3) % 1.0;
+          double opacity = 1.0;
+          
+          // Fade in during first 10%, stay solid for 80%, fade out during last 10%
+          if (cyclePosition < 0.1) {
+            opacity = cyclePosition * 10; // Fade in
+          } else if (cyclePosition > 0.9) {
+            opacity = (1.0 - cyclePosition) * 10; // Fade out
+          }
+          
+          return Opacity(
+            opacity: opacity,
+            child: Column(
+              children: [
+                // Text(
+                //   currentLanguage,
+                //   style: TextStyle(
+                //     fontSize: 14,
+                //     fontWeight: FontWeight.bold,
+                //     color: Theme.of(context).colorScheme.primary,
+                //   ),
+                // ),
+                // const SizedBox(height: 4),
+                Text(
+                  '"$currentText"',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 24,
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 } 

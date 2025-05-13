@@ -4,6 +4,7 @@ import 'dart:async'; // Added for Timer
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:multiply_ai/api_key.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:record/record.dart';
@@ -19,7 +20,7 @@ class VoiceService {
   static const Duration _silenceTimeout = Duration(seconds: 3);
 
   // Replace with your actual API keys and endpoints
-  final String _chatGptApiKey = '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';
+  final String _chatGptApiKey = OPENAI_API_KEY;
   final String _chatGptEndpoint = 'https://api.openai.com/v1/audio/transcriptions';
   final String _secondApiEndpoint = 'https://your-second-api-endpoint.com';
 
@@ -154,6 +155,7 @@ class VoiceService {
   }
 
   Future<Map<String, dynamic>?> sendToSecondApi(String text) async {
+    return {};
     try {
       final response = await http.post(
         Uri.parse(_secondApiEndpoint),

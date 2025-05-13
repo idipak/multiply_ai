@@ -16,8 +16,9 @@ class ProductListScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final asyncProducts = ref.watch(productsProvider(searchQuery));
-    final sortedProducts = ref.watch(sortedProductsProvider(searchQuery));
+    // final asyncProducts = ref.watch(productsProvider(searchQuery));
+    // final sortedProducts = ref.watch(sortedProductsProvider(searchQuery));
+    final asyncFilteredProducts = ref.watch(apiFilteredProductsProvider(searchQuery));
     final cartItemCount = ref.watch(cartItemCountProvider);
     final currentSortOption = ref.watch(sortOptionProvider);
     
@@ -45,6 +46,7 @@ class ProductListScreen extends ConsumerWidget {
           ),
         ],
       ),
+      endDrawer: const FilterDrawer(),
       body: CustomScrollView(
         slivers: [
           SliverToBoxAdapter(
@@ -68,16 +70,20 @@ class ProductListScreen extends ConsumerWidget {
                   Text(
                     "Search Results for: ", 
                     style: GoogleFonts.poppins(
-                      fontSize: 18,
+                      fontSize: 12,
                       color: Colors.blue.shade700,
                     ),
                   ),
-                  Text(
-                    searchQuery, 
-                    style: GoogleFonts.poppins(
-                      fontSize: 18, 
-                      fontWeight: FontWeight.w500,
-                      color: Colors.blue.shade900,
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      searchQuery, 
+                      maxLines: 3,
+                      style: GoogleFonts.poppins(
+                        fontSize: 14, 
+                        fontWeight: FontWeight.w500,
+                        color: Colors.blue.shade900,
+                      ),
                     ),
                   ),
                 ],
@@ -96,8 +102,8 @@ class ProductListScreen extends ConsumerWidget {
           const SliverToBoxAdapter(
             child: SizedBox(height: 16),
           ),
-          asyncProducts.when(
-            data: (_) => _buildProductGrid(context, sortedProducts, ref),
+          asyncFilteredProducts.when(
+            data: (filteredProducts) => _buildProductGrid(context, filteredProducts, ref),
             loading: () => const SliverFillRemaining(
               child: Center(child: CircularProgressIndicator()),
             ),

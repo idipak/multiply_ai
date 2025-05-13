@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/product.dart';
+import '../models/response_model.dart';
 import '../services/product_service.dart';
 
 class FilterState {
@@ -44,6 +45,46 @@ class FilterState {
       termiteResistantOnly: termiteResistantOnly ?? this.termiteResistantOnly,
       minRating: minRating != null ? minRating() : this.minRating,
     );
+  }
+  
+  // Convert to API parameters
+  Map<String, dynamic> toApiParams() {
+    final params = <String, dynamic>{};
+    
+    if (selectedWoodType != null) {
+      params['wood_type'] = selectedWoodType;
+    }
+    
+    if (selectedThickness != null) {
+      params['thickness'] = selectedThickness;
+    }
+    
+    if (selectedBrand != null) {
+      params['brand'] = selectedBrand;
+    }
+    
+    if (priceRange != null) {
+      params['min_price'] = priceRange!.start;
+      params['max_price'] = priceRange!.end;
+    }
+    
+    if (ecoFriendlyOnly == true) {
+      params['eco_friendly'] = 'Yes';
+    }
+    
+    if (fireResistantOnly == true) {
+      params['fire_resistant'] = 'Yes';
+    }
+    
+    if (termiteResistantOnly == true) {
+      params['termite_resistant'] = 'Yes';
+    }
+    
+    if (minRating != null) {
+      params['min_rating'] = minRating;
+    }
+    
+    return params;
   }
 }
 
@@ -107,6 +148,20 @@ class FilterNotifier extends StateNotifier<FilterState> {
   }
 }
 
+// Provider for filtered products using the API
+final apiFilteredProductsProvider = FutureProvider.family<List<Product>, String>((ref, searchQuery) async {
+  final productService = ref.watch(productServiceProvider);
+  // final filterState = ref.watch(filterProvider);
+  
+  // Create filter parameters including search query
+  // final params = filterState.toApiParams();
+  // params['search_query'] = searchQuery;
+  
+  // Call API with filter parameters
+  return await productService.applyFilters(searchQuery);
+});
+
+// Legacy filter provider that filters locally (can be used as fallback)
 final filteredProductsProvider = Provider.family<List<Product>, String>((ref, searchQuery) {
   final allProducts = ref.watch(productsProvider(searchQuery)).value ?? [];
   final filters = ref.watch(filterProvider);
@@ -139,27 +194,22 @@ final filteredProductsProvider = Provider.family<List<Product>, String>((ref, se
       }
     }
 
-    // Eco-friendly filter
-    if (filters.ecoFriendlyOnly == true && 
-        product.ecoFriendly != "Yes") {
-      return false;
-    }
-
     // Fire resistant filter
     if (filters.fireResistantOnly == true && 
-        product.fireResistant != "Yes") {
+        product.fireResistant != true) {
       return false;
     }
 
     // Termite resistant filter
     if (filters.termiteResistantOnly == true && 
-        product.termiteResistant != "Yes") {
+        product.termiteResistant != true) {
       return false;
     }
 
     // Rating filter
     if (filters.minRating != null && 
-        product.rating < filters.minRating!) {
+        product.rating != null &&
+        product.rating! < filters.minRating!) {
       return false;
     }
 

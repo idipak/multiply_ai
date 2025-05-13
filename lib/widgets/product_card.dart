@@ -66,8 +66,8 @@ class ProductCard extends ConsumerWidget {
               runSpacing: 8,
               children: [
                 // _buildChip(product.properties.toString(), Colors.blue.shade100),
-                _buildChip(product.woodType, Colors.green.shade100),
-                _buildChip(product.thickness, Colors.orange.shade100),
+                if (product.woodType != null) _buildChip(product.woodType!, Colors.green.shade100),
+                if (product.thickness != null) _buildChip(product.thickness!, Colors.orange.shade100),
               ],
             ),
             const SizedBox(height: 8),
@@ -84,7 +84,7 @@ class ProductCard extends ConsumerWidget {
                   ),
                 ),
                 Text(
-                  product.dimensions,
+                  product.dimensions ?? '',
                   style: GoogleFonts.poppins(
                     fontSize: 14,
                     color: Colors.grey[700],

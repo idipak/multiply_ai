@@ -33,23 +33,20 @@ class CartNotifier extends StateNotifier<List<CartItem>> {
   void addRecommendedProductToCart(RecommendedProduct recommendedProduct) {
     // Convert RecommendedProduct to Product
     final product = Product(
-      id: recommendedProduct.productId.toString(),
+      id: recommendedProduct.productId,
       name: recommendedProduct.productName,
       type: recommendedProduct.category,
-      properties: "",
+      properties: [],
       woodType: "",
       thickness: "",
       dimensions: "",
       color: "",
       price: recommendedProduct.price,
       brand: recommendedProduct.brand,
-      ecoFriendly: "",
-      fireResistant: "",
-      termiteResistant: "",
-      recommendedFor: "",
-      rating: recommendedProduct.rating,
+      fireResistant: false,
+      termiteResistant: false,
+      rating: 0,
       discount: recommendedProduct.discount,
-      stock: recommendedProduct.stock,
     );
     
     addToCart(product);
